@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Add Quiz</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm"
+        crossorigin="anonymous">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+</head>
+
+<body>
+
+
+    <div class="container">
+        <div class="container mt-3 text-center">
+            <a class="btn btn-primary" href="Show Quiz.html">Go to Quiz</a>
+
+        </div>
+        <br>
+        <form onsubmit="return addTask()">
+            <select class="custom-select" id="category">
+                <option required value="Choose Quiz Category">Choose Quiz Category</option>
+                <option required value="HTML">HTML</option>
+                <option required value="Javascript">Javascript</option>
+                <option required value="AngularJS">AngularJS</option>
+                <option required value="Urdu">Urdu</option>
+                <option required value="English">English</option>
+                <option required value="Java">Java</option>
+                <option required value="Firebase">Firebase</option>
+                <option required value="Bitcoin">Bitcoin</option>
+                <option required value="React">React</option>
+            </select>
+            <br>
+            <br>
+            <select class="custom-select" id="sub">
+                <option required value="Choose Quiz Category">Choose Quiz Sub Category</option>
+                <option required value="Quiz 1">Quiz 1</option>
+                <option required value="Quiz 2">Quiz 2</option>
+                <option required value="Quiz 3">Quiz 3</option>
+            </select>
+            <br>
+            <br>
+            <input type="text" required class="form-control mt-2" placeholder="Question" id="question">
+            <input type="text" required class="form-control mt-2" placeholder="Answer 1" id="ans1">
+            <input type="text" required class="form-control mt-2" placeholder="Answer 2" id="ans2">
+            <input type="text" required class="form-control mt-2" placeholder="Answer 3" id="ans3">
+            <input type="text" required class="form-control mt-2" placeholder="Answer 4" id="ans4">
+
+
+            <br>
+            <select class="custom-select" id="correctAns">
+                <option required selected value="Choose Correct Answer">Choose Correct Answer</option>
+                <option required value="a">Answer 1</option>
+                <option required value="b">Answer 2</option>
+                <option required value="c">Answer 3</option>
+                <option required value="d">Answer 4</option>
+            </select>
+
+            <!-- <input type="text" required class="form-control mt-2" placeholder="Correct Answer" id="correctAns"> -->
+
+            <button class="btn btn-dark mt-3" type="submit" name="Submit">Add Question</button>
+        </form>
+
+
+        <div id="main"></div>
+    </div>
+
+
+    <script src="https://www.gstatic.com/firebasejs/5.5.2/firebase.js"></script>
+    <script>
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyBwsvUi092vuey7Ba9JGlR2vefhM0qC6fc",
+            authDomain: "react-dynamic-quiz.firebaseapp.com",
+            databaseURL: "https://react-dynamic-quiz.firebaseio.com",
+            projectId: "react-dynamic-quiz",
+            storageBucket: "react-dynamic-quiz.appspot.com",
+            messagingSenderId: "636897309007"
+        };
+        firebase.initializeApp(config);
+    </script>
+
+    <script>
+
+        function addTask() {
+            let form = document.querySelector("form");
+            var category = document.getElementById('category').value;
+            var sub = document.getElementById('sub').value;
+            let question = document.getElementById('question').value;
+            var ans1 = document.getElementById('ans1').value;
+            var ans2 = document.getElementById('ans2').value;
+            var ans3 = document.getElementById('ans3').value;
+            var ans4 = document.getElementById('ans4').value;
+            var selectAns = document.getElementById('correctAns').value;
+            var correctAns;
+            if (selectAns === 'a') {
+                correctAns = ans1
+            }
+            if (selectAns === 'b') {
+                correctAns = ans2
+            }
+            if (selectAns === 'c') {
+                correctAns = ans3
+            }
+            if (selectAns === 'd') {
+                correctAns = ans4
+            }
+            // let quizRef = firebase.database().ref(`AllQuiz/${category}`);
+            let quizRef = firebase.database().ref(`AllQuiz/${category}/${sub}`);
+
+            let obj = {
+                question: question,
+                answers: {
+                    ans1: ans1,
+                    ans2: ans2,
+                    ans3: ans3,
+                    ans4: ans4
+                },
+                correctAns: correctAns
+            }
+
+
+            quizRef.push(obj);
+
+            let msg = `Question Added to ${category} Category in ${sub}`;
+            swal(msg);
+
+            form.reset();
+
+            quizRef.once("value", snapshot => {
+                console.log(snapshot.val());
+                snapshot.forEach(val => {
+                    console.log("data**", val);
+                });
+            });
+            return false;
+        }
+
+//  let tasksRef = _db.ref(`All Tasks/${myID}/${key}`);
+
+
+
+
+
+
+
+    </script>
+</body>
+
+</html>
